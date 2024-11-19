@@ -78,7 +78,7 @@ h1 > span {
 ;
 }
 
-h2{
+h2, button{
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
@@ -124,6 +124,22 @@ li:hover {
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
+}
+
+#portfolio nav {
+	display: flex;
+	justify-content: center;
+	gap : 10px;
+	margin: 50px;
+}
+
+#portfolio button {
+	border-radius: 60px;
+	border: 1px solid #1D6154;
+	font-size: 16px;
+	padding: 5px 20px;
+	background-color: white;
+
 }
 .gallery {
 	width: 100%;
