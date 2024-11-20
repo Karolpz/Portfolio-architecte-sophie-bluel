@@ -1,14 +1,15 @@
-//APPEL API FETCH------------------------------------------------------------------
-//CREATION GALLERIE----------------------------------------------------------------
+//APPEL API FETCH--------------------------------------------------------------------------------------------
+//CREATION GALLERIE------------------------------------------------------------------------------------------
 const urlAPI = "http://localhost:5678/api"
 const gallery = document.querySelector(".gallery")
+let dataGallery;
 
 async function  galleryData() {
 
     const response = await fetch (`${urlAPI}/works`)
-    const data = await response.json()
+    dataGallery = await response.json()
     
-    data.forEach((data) => {
+    dataGallery.forEach((data) => {
         const picture = document.createElement ("figure")
         
         picture.innerHTML =
@@ -17,23 +18,40 @@ async function  galleryData() {
 
             gallery.appendChild(picture) 
         })  
+            
 }
 
 galleryData()
 
 
-//FILTRES--------------------------------------------------------------------------
+
+
+//CREATION BARRE FILTRE------------------------------------------------------------------------------------
+const filterBar = document.createElement ("nav")
+gallery.insertAdjacentElement("beforebegin", filterBar)
+let dataCategory;
+
 async function  filterData() {
 
     const response = await fetch (`${urlAPI}/categories`)
-    const data = await response.json()
-    return data.map(category => category.name)
+    dataCategory = await response.json()
+
+    const defaultButton = document.createElement ("button")
+    defaultButton.textContent =("Tous")
+    filterBar.appendChild(defaultButton)
+
+    dataCategory.forEach((category) => {
+        const filterButton = document.createElement ("button")
+        filterButton.textContent =`${category.name}`
+        filterBar.appendChild(filterButton)
+    })
+
 }
 
 filterData()
 
-const filterBar = document.createElement ("nav")
-gallery.insertAdjacentElement("beforebegin", filterBar)
 
-filterBar.innerHTML = 
-"<button>Tous</button><button>Objets</button><button>Appartements</button><button>Hôtel & Restaurants</button>"
+//MISE EN PLACE FILTRES PHOTOS----------------------------------------------------------------------------------
+
+
+
