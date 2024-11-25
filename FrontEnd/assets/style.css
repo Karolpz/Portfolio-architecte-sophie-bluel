@@ -139,7 +139,11 @@ li:hover {
 	font-size: 16px;
 	padding: 5px 20px;
 	background-color: white;
-
+}
+#portfolio button:hover, 
+#portfolio button:focus {
+	background-color: #1D6154;
+	color: white;
 }
 .gallery {
 	width: 100%;
@@ -151,7 +155,6 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
 #contact {
 	width: 50%;

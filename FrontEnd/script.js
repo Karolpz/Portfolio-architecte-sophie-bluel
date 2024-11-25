@@ -1,57 +1,66 @@
 //APPEL API FETCH--------------------------------------------------------------------------------------------
+import { fetchWorks, fetchCategories } from './api.js';
+
+async function init() {
+    const works = await fetchWorks();
+    const categories = await fetchCategories();
+
+    createGallery(works);
+    createFilterBar(categories);
+}
+init();
+
 //CREATION GALLERIE------------------------------------------------------------------------------------------
-const urlAPI = "http://localhost:5678/api"
 const gallery = document.querySelector(".gallery")
-let dataGallery;
 
-async function  galleryData() {
-
-    const response = await fetch (`${urlAPI}/works`)
-    dataGallery = await response.json()
-    
-    dataGallery.forEach((data) => {
+function createGallery (works) {
+    works.forEach((item) => {
         const picture = document.createElement ("figure")
         
         picture.innerHTML =
-            `<img src = ${data.imageUrl} alt =${data.title}>
-            <figcaption> ${data.title}</figcaption>`
+            `<img src = ${item.imageUrl} alt =${item.title}>
+            <figcaption> ${item.title}</figcaption>`
 
-            gallery.appendChild(picture) 
-        })  
+            gallery.appendChild(picture)
             
-}
-
-galleryData()
-
-
-
+            picture.setAttribute("data-id", item.categoryId);
+            
+        })    
+} 
 
 //CREATION BARRE FILTRE------------------------------------------------------------------------------------
-const filterBar = document.createElement ("nav")
+let filterBar = document.createElement ("nav")
 gallery.insertAdjacentElement("beforebegin", filterBar)
-let dataCategory;
 
-async function  filterData() {
+const defaultButton = document.createElement ("button")
+defaultButton.textContent =("Tous")
+filterBar.appendChild(defaultButton)
+defaultButton.addEventListener("click", () => {
+    filterApply("all")
+})
 
-    const response = await fetch (`${urlAPI}/categories`)
-    dataCategory = await response.json()
+function createFilterBar(categories) {
 
-    const defaultButton = document.createElement ("button")
-    defaultButton.textContent =("Tous")
-    filterBar.appendChild(defaultButton)
-
-    dataCategory.forEach((category) => {
+    categories.forEach((category) => {
         const filterButton = document.createElement ("button")
-        filterButton.textContent =`${category.name}`
+        filterButton.textContent = category.name
         filterBar.appendChild(filterButton)
-    })
 
+        filterButton.addEventListener("click", () => {
+            filterApply(category.id)
+        })
+    })
 }
 
-filterData()
-
-
-//MISE EN PLACE FILTRES PHOTOS----------------------------------------------------------------------------------
-
-
+function filterApply(filterId) {
+    const images = document.querySelectorAll(".gallery figure")
+    images.forEach((image) => {
+    const imageCategoryId = parseInt(image.getAttribute("data-id"), 10);
+    if (filterId === "all" || imageCategoryId === filterId) {
+        image.style.display = ""; // Affiche l'image
+    } else {
+        image.style.display = "none"; // Masque l'image
+    }
+});
+}
 
