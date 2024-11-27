@@ -1,11 +1,21 @@
+// Fonction pour récupérer les travaux (images) depuis l'API
 export async function fetchWorks() {
-    const urlAPIworks = "http://localhost:5678/api/works";
-    const response = await fetch(urlAPIworks);
-    return await response.json();
+    try {
+    const urlAPIworks = "http://localhost:5678/api/works"; // URL de l'API pour les travaux
+    const response = await fetch(urlAPIworks); // Fait une requête HTTP GET pour récupérer les données
+    return await response.json(); // Convertit la réponse en JSON et la retourne
+    } catch (error) {
+        console.log("Une erreur s'est produite dans la récupération de l'API works : ", error)
+    }
 }
 
+// Fonction pour récupérer les catégories depuis l'API
 export async function fetchCategories() {
-    const urlAPIcategories = "http://localhost:5678/api/categories";
-    const response = await fetch(urlAPIcategories);
-    return await response.json();
+    try {
+    const urlAPIcategories = "http://localhost:5678/api/categories"; // URL de l'API pour les catégories
+    const response = await fetch(urlAPIcategories); // Fait une requête HTTP GET pour récupérer les données
+    return await response.json(); // Convertit la réponse en JSON et la retourne
+} catch (error) {
+    console.log("Une erreur s'est produite dans la récupération de l'API categories : ", error)
+}
 }
