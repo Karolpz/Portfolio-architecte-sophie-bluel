@@ -5,13 +5,13 @@ async function init() {
 }
 init();
 
-async function tokenData (event) {
+async function tokenData(event) {
     event.preventDefault(); // Empêche le rechargement de la page
     const dataUser = collectDataForm(event); // Récupère les données du formulaire
 
     // Appelle fetchLogin avec les données collectées
     const response = await fetchLogin(dataUser);
-    localStorage.setItem("userToken",response.token)
+    localStorage.setItem("userToken", response.token)
 }
 
 function eventListenerForm() {
