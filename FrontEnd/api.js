@@ -19,3 +19,19 @@ export async function fetchCategories() {
     console.log("Une erreur s'est produite dans la récupération de l'API categories : ", error)
 }
 }
+
+export async function fetchLogin(user) {
+    try {
+    const urlAPILogin = "http://localhost:5678/api/users/login"; // URL de l'API pour les utilisateurs
+    const response = await fetch(urlAPILogin, {
+        method: "POST", // Fait une requête HTTP POST pour récupérer les données
+        headers: {
+            "Content-Type": "application/json" // Indique que les données envoyées sont en JSON
+        },
+        body: JSON.stringify(user)
+    });
+    return await response.json(); // Convertit la réponse en JSON et la retourne
+} catch (error) {
+    console.log("Une erreur s'est produite dans la récupération de l'API login : ", error)
+}
+}
