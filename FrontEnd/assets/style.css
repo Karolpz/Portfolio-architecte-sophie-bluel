@@ -247,3 +247,9 @@ footer nav ul {
 	text-decoration: underline;
 	text-align: center;
 }
+#login .failed {
+	color: red;
+	font-weight: 700;
+	text-decoration: none;
+	margin-bottom: 20px;
+}
