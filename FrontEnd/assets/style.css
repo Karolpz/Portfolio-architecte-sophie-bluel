@@ -253,3 +253,19 @@ footer nav ul {
 	text-decoration: none;
 	margin-bottom: 20px;
 }
+/*****ADMIN*****/
+.editionBar {
+	background-color: black;
+	color: white;
+	text-align: center;
+	padding: 20px 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	top: 0;
+	width: 100%;
+}
+
+.headerAdmin {
+	margin-top : 100px;
+}

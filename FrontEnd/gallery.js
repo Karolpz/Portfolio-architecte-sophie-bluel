@@ -1,32 +1,58 @@
-///***APPEL API ***/// --------------------------------------------------------------------------------------------------------------------------------------------------------
-import { fetchWorks } from './api.js'; // Importation des fonctions pour récupérer les données de l'API
+// =============================
+// APPEL API : Works
+// =============================
+import { fetchWorks } from './api.js'; 
+// =============================
+// INITIALISATION DE L'APPLICATION
+// =============================
 
-// Fonction principale appelée au démarrage
+/**
+ * Fonction principale pour initialiser l'application
+ * - Récupère les travaux et les affiche dans la galerie
+ */
 async function init() {
-    const works = await fetchWorks(); // Récupère les travaux (images) depuis l'API
-    
+    try {
+    const works = await fetchWorks();
     addGallery(works); // Ajoute les images récupérées à la galerie
+    } catch(error) {
+        console.log("Erreur lors de l'initialisation de la gallerie :", error);
+    }
 }
 init(); // Démarre l'application
 
-///***CREATION ET SELECTION DE LA GALLERIE ***/// --------------------------------------------------------------------------------------------------------------------------------------------------------
-// Fonction pour créer une figure (image + titre) à partir d'un élément
+// =============================
+// GESTION DE LA GALERIE
+// =============================
+
+/**
+ * Crée un élément figure contenant une image et un titre.
+ * @param {Object} item - Un élément contenant les données de l'image.
+ * @returns {HTMLElement} - L'élément <figure> créé.
+ */
 function createPicture(item) {
-    const picture = document.createElement("figure"); // Crée un élément <figure>
-    const image =document.createElement("img")// Crée un élement <img>
-    const title = document.createElement("figcaption") //Crée un élement <figcaption>    
+    // Création des éléments nécessaires
+    const picture = document.createElement("figure");
+    const image = document.createElement("img")
+    const title = document.createElement("figcaption") 
+    
+    // Configuration des éléments
+    image.src = item.imageUrl
+    image.alt = item.title
+    title.textContent = item.title
+    picture.setAttribute("data-id", item.categoryId); 
+
+    // Ajout des enfants au parent <figure>
     picture.appendChild(image)// Rattache img au parent picture
     picture.appendChild(title)// rattache title au parent picture
 
-    image.src = item.imageUrl//Insère l'url de l'image
-    image.alt = item.title//Insère l'alt de l'image
-    title.textContent = item.title//Insère le titre de l'image
-
-    picture.setAttribute("data-id", item.categoryId); // Ajoute un attribut pour la catégorie de l'image
     return picture; // Retourne l'élément créé
 }
 
-// Fonction pour vider la galerie et ajouter une liste d'éléments
+/**
+ * Ajoute une liste d'éléments.
+ * @param {Array} works - Liste des travaux récupérés.
+ */
+
 function addGallery(works) {
     const gallery = document.querySelector(".gallery");// Sélectionne l'élément HTML où sera affichée la galerie
     works.forEach((item) => { // Parcourt chaque élément récupéré

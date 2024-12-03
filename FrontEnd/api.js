@@ -20,6 +20,7 @@ export async function fetchCategories() {
 }
 }
 
+// Fonction pour récupérer les users depuis l'API
 export async function fetchLogin(user) {
     try {
     const urlAPILogin = "http://localhost:5678/api/users/login"; // URL de l'API pour les utilisateurs
