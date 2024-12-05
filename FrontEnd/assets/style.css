@@ -33,6 +33,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	padding-top: 20px;
 }
 ol, ul {
 	list-style: none;
@@ -133,9 +134,8 @@ li:hover {
 }
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
+	margin: 150px 0 16px 70px;
 }
-
 #portfolio nav {
 	display: flex;
 	justify-content: center;
@@ -254,18 +254,27 @@ footer nav ul {
 	margin-bottom: 20px;
 }
 /*****ADMIN*****/
-.editionBar {
-	background-color: black;
-	color: white;
-	text-align: center;
-	padding: 20px 0;
-	position: absolute;
-	top: 0;
-	right: 0;
-	top: 0;
-	width: 100%;
+.editionBar,.modifierElement {
+	visibility: hidden;
 }
 
-.headerAdmin {
+.editionBar {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+/* .headerAdmin {
 	margin-top : 100px;
+} */
+.modifierElement {
+	color: black;
+	font-size: 14px;
+	font-family: 'Work Sans';
+	font-weight: 400;
+	margin-left: 30px;
 }
