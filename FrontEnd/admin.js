@@ -3,39 +3,50 @@
 // =============================
 import { fetchCategories } from './api.js';
 import { createFilterBar } from './filter.js';
+import { initModal } from './modale.js';
 
 async function init() {
     try {
-    const categories = await fetchCategories();
-    const authLink = document.querySelector("header nav ul a li");
-    
-    createFilterBar(categories); // Crée la barre de filtres basée sur les catégories
-    
-    const filterBar = document.querySelector("#portfolio nav");
-    removeElementAdmin (filterBar)
+        const categories = await fetchCategories();
+        const authLink = document.querySelector("header nav ul a li");
 
-    addElementAdmin(editionBar)
-    addElementAdmin(modifierElement)
+        createFilterBar(categories); // Crée la barre de filtres basée sur les catégories
+        
+        const filterBar = document.querySelector("#portfolio nav");
+        const isAdmin = isAdminLoggedIn(); // Vérifie le statut admin
 
-    addLogout(authLink)
- 
+        // Gestion des éléments en fonction du statut admin
+        toggleElementVisibility(filterBar, !isAdmin); // Cache la barre de filtres si admin
+        toggleElementVisibility(editionBar, isAdmin); // Affiche la barre d'édition si admin
+        toggleElementVisibility(modifierElement, isAdmin); // Affiche "modifier" si admin
+
+        // Gestion du lien login/logout
+        updateAuthLink(authLink);
+
+        initModal(modifierElement)
+        
     } catch (error) {
         console.log("Erreur lors de l'initialisation des filtres :", error);
     }
 }
-// =============================
-// GESTION DE LA PAGE D'ACCEUIL EN MODE ADMIN
-// =============================
-/**
- * Masque ou affiche la barre de filtres en fonction du statut admin.
- */
 
+// Crée une barre d'édition pour le mode admin
 const editionBar = createEditionBar();
-const modifierElement = createModifierElement ()
+const modifierElement = createModifierElement();
 const header = document.querySelector("header");
 
-// Insertion dans le DOM
+// Ajout de la barre d'édition au DOM
 header.insertAdjacentElement("beforebegin", editionBar);
+
+function isAdminLoggedIn() {
+    const adminToken = localStorage.getItem("userToken");
+    // Renvoie true uniquement si le token est défini, non vide et différent de "undefined"
+    return adminToken && adminToken !== "undefined";
+}
+
+function toggleElementVisibility(element, isVisible) {
+    element.style.visibility = isVisible ? "visible" : "hidden";
+}
 
 function createEditionBar() {
     const editionBar = document.createElement("div");
@@ -54,62 +65,45 @@ function createEditionBar() {
     return editionBar;
 }
 
-function createModifierElement () {
-    const mesProjets = document.querySelector("#portfolio h2")
-    const modifierText = document.createElement("span")
+function createModifierElement() {
+    const mesProjets = document.querySelector("#portfolio h2");
+    const modifierText = document.createElement("span");
 
+    // Ajout de l'icône
     const icon = document.createElement("i");
     icon.classList.add("fa-regular", "fa-pen-to-square");
-    modifierText.appendChild(icon)
+    modifierText.appendChild(icon);
 
-    modifierText.append(" modifier")
+    // Ajout du texte "modifier"
+    modifierText.append(" modifier");
+    modifierText.classList.add("modifierElement");
 
-    modifierText.classList.add("modifierElement")
+    // Ajout à la section des projets
+    mesProjets.appendChild(modifierText);
 
-    mesProjets.appendChild(modifierText)
-
-    return modifierText
+    return modifierText;
 }
 
-function removeElementAdmin (element) {
-    const adminToken = localStorage.getItem("userToken")
-    if (adminToken !== "undefined" && adminToken !== null) {
-        element.style.visibility = "hidden";
-    } else {
-        element.style.visibility = "visible";
-    }  
-}
+// Met à jour le lien login/logout selon le statut admin
+function updateAuthLink(authLink) {
+    const isAdmin = isAdminLoggedIn();
 
-function addElementAdmin (element) {
-    const adminToken = localStorage.getItem("userToken")
-    if (adminToken !== "undefined" && adminToken !== null) {
-        element.style.visibility = "visible";
-    } else {
-        element.style.visibility = "hidden";
-    }  
-}
+    // Change le texte du lien
+    authLink.textContent = isAdmin ? "logout" : "login";
 
-
-function addLogout(logoutLink) {
-    const adminToken = localStorage.getItem("userToken")
-    // Modifier le lien en fonction de l'état de connexion
-    if (adminToken !== "undefined" && adminToken !== null) {
-        // Si l'utilisateur est connecté, on remplace "login" par "logout"
-        logoutLink.textContent = "logout";
-    } else {
-        logoutLink.textContent = "login";
-    }
-
-    // Ajouter un événement pour se déconnecter si nécessaire
-    if (logoutLink.textContent === "logout") {
-        logoutLink.addEventListener("click", (event) => {
+    // Gère l'événement pour la déconnexion
+    if (isAdmin) {
+        authLink.addEventListener("click", (event) => {
             event.preventDefault();
-            localStorage.removeItem("userToken"); // Supprimer le token ou la session pour se déconnecter
-            window.location.reload(); // Recharger la page pour mettre à jour l'état
+            localStorage.removeItem("userToken"); // Supprime le token admin
+            window.location.reload(); // Recharge la page pour mettre à jour
         });
     }
 }
+
+// Démarre tout une fois la page chargée
 document.addEventListener('DOMContentLoaded', init);
+
 
 
 

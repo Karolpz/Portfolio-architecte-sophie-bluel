@@ -13,7 +13,7 @@ import { fetchWorks } from './api.js';
 async function init() {
     try {
     const works = await fetchWorks();
-    addGallery(works); // Ajoute les images récupérées à la galerie
+    addGallery(works, ".gallery"); // Ajoute les images récupérées à la galerie
     } catch(error) {
         console.log("Erreur lors de l'initialisation de la gallerie :", error);
     }
@@ -29,7 +29,7 @@ init(); // Démarre l'application
  * @param {Object} item - Un élément contenant les données de l'image.
  * @returns {HTMLElement} - L'élément <figure> créé.
  */
-function createPicture(item) {
+export function createPicture(item) {
     // Création des éléments nécessaires
     const picture = document.createElement("figure");
     const image = document.createElement("img")
@@ -53,8 +53,8 @@ function createPicture(item) {
  * @param {Array} works - Liste des travaux récupérés.
  */
 
-function addGallery(works) {
-    const gallery = document.querySelector(".gallery");// Sélectionne l'élément HTML où sera affichée la galerie
+export function addGallery(works, classGallery) {
+    const gallery = document.querySelector(classGallery);// Sélectionne l'élément HTML où sera affichée la galerie
     works.forEach((item) => { // Parcourt chaque élément récupéré
         const picture = createPicture(item); // Crée une picture pour chaque élément
         gallery.appendChild(picture); // Ajoute la picture à la galerie grace au "return picture"         
