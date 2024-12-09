@@ -39,11 +39,10 @@ export function createFilterBar(categories) {
 function filterApply(filterId) {
     const images = document.querySelectorAll(".gallery figure");
     images.forEach((image) => { 
-        const imageCategoryId = parseInt(image.getAttribute("data-id"), 10); //
+        const imageCategoryId = parseInt(image.getAttribute("data-category-id"), 10); //
         image.style.display = filterId === 0 || imageCategoryId === filterId ? "" : "none";
         })
  };
-
 
 /**
  * Ajoute un gestionnaire d'événements pour appliquer les filtres.
@@ -67,12 +66,3 @@ function filterColor (filterSelected) {
     })
 }
 
-// function adminFilterBar () {
-//     const filterBar = document.querySelector("#portfolio nav")
-//     const adminToken = localStorage.getItem ("userToken")
-//     if (adminToken !== 'undefined') {
-//         filterBar.style.display = "none"
-//     } else {
-//         filterBar.style.display = ""
-//     }
-// }

@@ -36,3 +36,23 @@ export async function fetchLogin(user) {
     console.log("Une erreur s'est produite dans la récupération de l'API login : ", error)
 }
 }
+
+// Fonction pour supprimer les travaux depuis l'API
+export async function fetchDelete (workId) {
+    try {
+        const adminToken = localStorage.getItem("userToken")
+        const urlAPIDelete = `http://localhost:5678/api/works/${workId}`;
+        const response = await fetch(urlAPIDelete, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${adminToken}`
+    }
+})
+console.log(response.status);
+return await response.json(); // Convertit la réponse en JSON et la retourne
+
+
+} catch (error) {
+    console.log("Une erreur s'est produite dans la récupération de l'API delete : ", error)
+}
+}

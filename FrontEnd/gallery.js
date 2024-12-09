@@ -39,7 +39,8 @@ export function createPicture(item) {
     image.src = item.imageUrl
     image.alt = item.title
     title.textContent = item.title
-    picture.setAttribute("data-id", item.categoryId); 
+    picture.setAttribute("data-category-id", item.categoryId); 
+    image.setAttribute("data-id", item.id); 
 
     // Ajout des enfants au parent <figure>
     picture.appendChild(image)// Rattache img au parent picture
@@ -55,8 +56,18 @@ export function createPicture(item) {
 
 export function addGallery(works, classGallery) {
     const gallery = document.querySelector(classGallery);// Sélectionne l'élément HTML où sera affichée la galerie
+    gallery.innerHTML = '';
     works.forEach((item) => { // Parcourt chaque élément récupéré
         const picture = createPicture(item); // Crée une picture pour chaque élément
         gallery.appendChild(picture); // Ajoute la picture à la galerie grace au "return picture"         
     });
+}
+
+export async function refreshGallery() {
+    try {
+        const works = await fetchWorks();
+        addGallery(works, ".gallery");
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la galerie :", error);
+    }
 }
