@@ -56,3 +56,24 @@ return await response.json(); // Convertit la réponse en JSON et la retourne
     console.log("Une erreur s'est produite dans la récupération de l'API delete : ", error)
 }
 }
+
+// Fonction pour supprimer les travaux depuis l'API
+export async function fetchAddWorks(formData) {
+    try {
+        const adminToken = localStorage.getItem("userToken");
+        const urlAPIPost = `http://localhost:5678/api/works`;
+
+        const response = await fetch(urlAPIPost, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${adminToken}`,
+            },
+            body: formData
+        });
+        
+        return await response.json()
+
+    } catch (error) {
+        console.error("Une erreur s'est produite dans la récupération de l'API ajout des travaux : ", error);
+    }
+}

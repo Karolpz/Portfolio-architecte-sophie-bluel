@@ -1,4 +1,4 @@
-import { fetchWorks, fetchDelete } from './api.js';
+import { fetchWorks, fetchDelete, fetchCategories, fetchAddWorks } from './api.js';
 import { addGallery, refreshGallery } from './gallery.js';
 
 // Fonction pour créer la modale avec la galerie
@@ -40,15 +40,19 @@ async function createModalGallery() {
   
     const modalGallery = document.createElement('div');
     modalGallery.classList.add('modalGallery');
-  
+
     const modalLine = document.createElement('div');
     modalLine.classList.add('modalLine');
   
     const addPictureButton = document.createElement("button");
     addPictureButton.textContent = "Ajouter une photo";
     addPictureButton.classList.add("addPictureButton");
-    addPictureButton.addEventListener("click",createAddPictureForm)
-  
+
+    addPictureButton.addEventListener(("click"), async() => {
+      const categories = await fetchCategories()
+      createAddPictureForm(categories)
+    }) 
+
     modalGalleryContent.appendChild(modalGallery);
     modalGalleryContent.appendChild(modalLine);
     modalGalleryContent.appendChild(addPictureButton);
@@ -101,10 +105,8 @@ function eventListenerDeletePicture() {
             })
         };
 
-
-
-//Fonction qui oermet de créer le formulaire d'ajout photo
-function createAddPictureForm () {
+//Fonction qui permet de créer le formulaire d'ajout photo
+function createAddPictureForm (categories) {
     const formContent = document.createElement("div")
     formContent.id = "formContainer"
     formContent.textContent = "Ajout photo";
@@ -125,12 +127,59 @@ function createAddPictureForm () {
     inputTitle.name = "title"
     inputTitle.id = "title"
 
+    const labelCategories = document.createElement ("label")
+    labelCategories.for = "categories"
+    labelCategories.textContent ="Categorie"
+    const selectCategories = document.createElement("select")
+    selectCategories.id = "categories"
+    selectCategories.name = "categories"
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "";
+    selectCategories.appendChild(defaultOption);
+
+    const modalLine = document.createElement('div');
+    modalLine.classList.add('modalLine');
+
+    categories.forEach((category) =>{
+      const optionCategories = document.createElement("option")
+      optionCategories.value = category.id
+      optionCategories.textContent = category.name
+      selectCategories.appendChild(optionCategories)
+    })
+
+    const submitAddPicture = document.createElement("input");
+    submitAddPicture.type = "submit";
+    submitAddPicture.value = "Valider";
+
     formContent.appendChild(form)
     form.appendChild(inputAddPicture)
     form.appendChild(labelTitle)
     form.appendChild(inputTitle)
+    form.appendChild(labelCategories)
+    form.appendChild(selectCategories)
+    form.appendChild(modalLine);
+    form.appendChild(submitAddPicture);
 
+    form.addEventListener("submit", async (event) => {
+      await addFormData(inputAddPicture, inputTitle, selectCategories)
+      event.preventDefault(); // Empêche le rechargement de la page
 
+        refreshGallery();
+      }
+    );
 
     createModalStructure(formContent) 
 }
+
+async function addFormData (image, title, category) {
+  const formData = new FormData();
+
+    formData.append("imageUrl", image.files[0]); // Ajoute l'image
+    formData.append("title", title.value); // Ajoute le titre
+    formData.append("categoryId", parseInt(category.value)); // Ajoute la catégorie
+
+    await fetchAddWorks(formData);
+  }
+
