@@ -1,3 +1,20 @@
+import { fetchCategories } from './api.js';
+import { isAdminLoggedIn } from './admin.js';
+// =============================
+// APPEL API : categories
+// =============================
+async function init () {
+    try {
+        const isAdmin = isAdminLoggedIn()
+        if (!isAdmin) {
+            const categories = await fetchCategories()
+            createFilterBar(categories)
+        }
+    } catch (error) {
+            console.log("Erreur lors de l'initialisation des filtres :", error);
+    }
+}
+init()
 // =============================
 // GESTION DE LA BARRE DE FILTRES
 //==============================

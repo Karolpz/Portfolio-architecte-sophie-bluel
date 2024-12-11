@@ -52,21 +52,24 @@ export function createPicture(item) {
 /**
  * Ajoute une liste d'éléments.
  * @param {Array} works - Liste des travaux récupérés.
+ * @param {Object} classGallery - Classe utilisée pour incorporer les travaux
  */
-
 export function addGallery(works, classGallery) {
     const gallery = document.querySelector(classGallery);// Sélectionne l'élément HTML où sera affichée la galerie
-    gallery.innerHTML = '';
+    gallery.innerHTML = ''; // Nettoie la gallerie
     works.forEach((item) => { // Parcourt chaque élément récupéré
         const picture = createPicture(item); // Crée une picture pour chaque élément
         gallery.appendChild(picture); // Ajoute la picture à la galerie grace au "return picture"         
     });
 }
 
-export async function refreshGallery() {
+/**
+ * Fonction pour raffraichir la gallerie après modifications
+ */
+export async function refreshGallery(classGalery) {
     try {
         const works = await fetchWorks();
-        addGallery(works, ".gallery");
+        addGallery(works, classGalery);
     } catch (error) {
         console.error("Erreur lors de la mise à jour de la galerie :", error);
     }
