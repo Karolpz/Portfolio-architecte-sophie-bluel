@@ -168,6 +168,7 @@ li:hover {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	aspect-ratio: 3/4;
 }
 #contact {
 	width: 50%;
@@ -361,9 +362,94 @@ footer nav ul {
 	width: 420px;
 	margin-top: 70px;
 }
-.addPictureButton {
+.greenButton {
 	background-color: #1D6154;
 	color: white;
 	margin-top: 50px;
 	padding : 10px 60px;
 }
+
+/*****MODAL 2*****/
+ #formContainer form {
+	display: flex;
+	flex-direction: column;
+	margin-top: 40px;
+ }
+ #formContainer input[type="file"]{
+	z-index : 1;
+	opacity: 0;
+	position: absolute;
+ }
+ #formContainer .addFileContainer {
+	display: flex;
+	flex-direction: column;
+	background-color: #E8F1F6;
+	padding: 20px 70px;
+	width: 280px;
+	height: 130px;
+ }
+ #formContainer .iconImage {
+	color: #B9C5CC;
+	font-size: 70px;
+	margin : 10px auto;
+ }
+ #formContainer .previewImage {
+	display: none;
+	object-fit: cover;
+	height: 170px;
+	width: 150px;
+	position: absolute;
+	top: 135px;
+	left: 240px
+ }
+ #formContainer .addFileButton {
+	color: #306685;
+	font-size: 14px;
+	font-family: "Work Sans";
+	font-weight: 700;
+	text-align: center;
+	margin: auto;
+	background-color: #B9C5CC;
+	border-radius: 50px;
+	padding: 10px 30px;
+	cursor: pointer;
+ }
+ #formContainer .addFileContainer p {
+	font-size: 10px;
+	font-weight: 400;
+	margin-top: 10px;
+ }
+ #formContainer label {
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 500;
+	font-family:'Work Sans';
+	text-align: left;
+	margin-top : 30px;
+ }
+
+ #formContainer #title,
+ #formContainer #categories {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+ }
+#formContainer option,
+#formContainer #title,
+#formContainer #categories  {
+	font-size: 14px;
+	font-family: 'Work Sans';
+	font-weight: 400;
+	padding-left : 10px;
+}
+ #formContainer .modalLine {
+	margin-top : 50px;
+ }
+
+ #formContainer input[type="submit"] {
+	margin-top: 50px;
+	padding : 10px 60px;
+	border: none;
+	width: 237px;
+ }

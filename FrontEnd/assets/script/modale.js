@@ -46,7 +46,7 @@ async function createModalGallery() {
   
     const addPictureButton = document.createElement("button");
     addPictureButton.textContent = "Ajouter une photo";
-    addPictureButton.classList.add("addPictureButton");
+    addPictureButton.classList.add("greenButton");
 
     addPictureButton.addEventListener(("click"), async() => {
       const categories = await fetchCategories()
@@ -114,10 +114,29 @@ function createAddPictureForm (categories) {
 
     const form = document.createElement('form');
     form.method = "POST";
-    form.action = "#"
+    form.action = "#";
+    form.enctype = "multipart/form-data";
+
+    const addPictureContainer = document.createElement("div")
+    addPictureContainer.classList.add("addFileContainer")
+
+    const iconImage = document.createElement("i");
+    iconImage.classList.add("fa-regular", "fa-image", "iconImage")
+
+    const previewImage = document.createElement("img");
+    previewImage.classList.add("previewImage");
+    previewImage.alt = "Aperçu de l'image";
+
+    const labelAddPicture = document.createElement ("label")
+    labelAddPicture.classList.add("addFileButton")
+    labelAddPicture.textContent ="+ Ajouter photo"
+
+    const sizeInfo = document.createElement("p")
+    sizeInfo.textContent="jpg, png : 4mo max"
 
     const inputAddPicture = document.createElement("input")
     inputAddPicture.type = "file"
+    inputAddPicture.name = "uploaded_file"
 
     const labelTitle = document.createElement ("label")
     labelTitle.for = "title"
@@ -130,10 +149,11 @@ function createAddPictureForm (categories) {
     const labelCategories = document.createElement ("label")
     labelCategories.for = "categories"
     labelCategories.textContent ="Categorie"
+
     const selectCategories = document.createElement("select")
     selectCategories.id = "categories"
     selectCategories.name = "categories"
-
+    
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.textContent = "";
@@ -148,13 +168,18 @@ function createAddPictureForm (categories) {
       optionCategories.textContent = category.name
       selectCategories.appendChild(optionCategories)
     })
-
+    
     const submitAddPicture = document.createElement("input");
     submitAddPicture.type = "submit";
     submitAddPicture.value = "Valider";
 
     formContent.appendChild(form)
-    form.appendChild(inputAddPicture)
+    form.appendChild(addPictureContainer)
+    addPictureContainer.appendChild(iconImage)
+    addPictureContainer.appendChild(previewImage); 
+    addPictureContainer.appendChild(labelAddPicture)
+    labelAddPicture.appendChild(inputAddPicture)
+    addPictureContainer.appendChild(sizeInfo)
     form.appendChild(labelTitle)
     form.appendChild(inputTitle)
     form.appendChild(labelCategories)
@@ -162,11 +187,28 @@ function createAddPictureForm (categories) {
     form.appendChild(modalLine);
     form.appendChild(submitAddPicture);
 
-    form.addEventListener("submit", async (event) => {
-      await addFormData(inputAddPicture, inputTitle, selectCategories)
-      event.preventDefault(); // Empêche le rechargement de la page
+    inputAddPicture.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+              previewImage.src = event.target.result;
+              previewImage.style.display = "block"; // Afficher l'image
+              iconImage.style.display = "none"; // Cacher l'icône
+              labelAddPicture.style.display = "none"; // Cacher l'icône
+          };
+          reader.readAsDataURL(file); // Lire le fichier
+      } else {
+          previewImage.style.display = "none"; // Cacher l'aperçu si le fichier n'est pas valide
+          iconImage.style.display = "block"; // Réafficher l'icône
+          alert("Veuillez sélectionner une image valide (jpg ou png).");
+      }
+  });
 
-        refreshGallery();
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault(); // Empêche le rechargement de la page
+      await addFormData(inputAddPicture, inputTitle, selectCategories)
+        refreshGallery(".gallery");
       }
     );
 
@@ -175,11 +217,12 @@ function createAddPictureForm (categories) {
 
 async function addFormData (image, title, category) {
   const formData = new FormData();
-
-    formData.append("imageUrl", image.files[0]); // Ajoute l'image
-    formData.append("title", title.value); // Ajoute le titre
-    formData.append("categoryId", parseInt(category.value)); // Ajoute la catégorie
+  
+    formData.append("image", image.files[0]);
+    formData.append("title", title.value);
+    formData.append("category", parseInt(category.value,10));
 
     await fetchAddWorks(formData);
   }
 
+  

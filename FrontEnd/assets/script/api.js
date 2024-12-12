@@ -48,9 +48,8 @@ export async function fetchDelete (workId) {
                 "Authorization": `Bearer ${adminToken}`
     }
 })
-console.log(response.status);
-return await response.json(); // Convertit la réponse en JSON et la retourne
 
+return await response.json(); // Convertit la réponse en JSON et la retourne
 
 } catch (error) {
     console.log("Une erreur s'est produite dans la récupération de l'API delete : ", error)
