@@ -3,50 +3,37 @@
 // =============================
 import { fetchLogin } from './api.js';
 
-const formulaire = document.querySelector("form"); // Sélectionne le formulaire dans le DOM
-formulaire.addEventListener("submit", tokenData); // Ajoute un événement de soumission au formulaire
+const formulaire = document.querySelector("form");
+formulaire.addEventListener("submit", tokenData);
 
-/**
- * Fonction pour gérer la soumission du formulaire et effectuer la connexion.
- * @param {Event} event - L'événement de soumission du formulaire.
- */
+// Gère la soumission du formulaire et effectue la connexion
 async function tokenData(event) {
     try {
-        event.preventDefault(); // Empêche le rechargement de la page lors de la soumission du formulaire 
-
-        //Collecte les données du formulaire de connexion
+        event.preventDefault();
         const dataUser = {
-        email: event.target.querySelector("#email").value,
-        password: event.target.querySelector("#password").value,
+            email: event.target.querySelector("#email").value,
+            password: event.target.querySelector("#password").value,
         };
-    
-        // Appelle la fonction fetchLogin avec les données de l'utilisateur et attend la réponse
         const response = await fetchLogin(dataUser);
-         
         if (response.token) {
-            localStorage.setItem("userToken", response.token); // Sauvegarde le token d'authentification dans le localStorage
-            window.location.href = "index.html"; // Redirige l'utilisateur vers la page d'accueil
+            localStorage.setItem("userToken", response.token);
+            window.location.href = "index.html";
         } else {
-            showErrorMessage(); // Affiche un message d'erreur si les tokens ne correspondent pas
+            showErrorMessage();
         }
     } catch (error) {
         console.log("Erreur lors de la récupération des données utilisateur :", error);
     }
 }
 
-/**
- * Affiche un message d'erreur en cas de connexion échouée.
- */
+// Affiche un message d'erreur si la connexion échoue
 function showErrorMessage() {
-    const formulaire = document.querySelector("form"); // Sélectionne le formulaire
-    let failMessage = document.querySelector(".failed"); // Cherche un message d'erreur existant
-
-    // Si aucun message d'erreur n'existe, on crée un nouveau message
+    const formulaire = document.querySelector("form");
+    let failMessage = document.querySelector(".failed");
     if (!failMessage) {
-        failMessage = document.createElement("p"); // Crée un élément <p> pour afficher le message d'erreur
-        failMessage.textContent = "Erreur de connexion : adresse mail ou mot de passe incorrect."; // Texte du message d'erreur
-        failMessage.classList.add("failed"); // Ajoute une classe CSS pour styliser le message
-        formulaire.insertAdjacentElement("afterend", failMessage); // Ajoute le message après le formulaire
+        failMessage = document.createElement("p");
+        failMessage.textContent = "Erreur de connexion : adresse mail ou mot de passe incorrect.";
+        failMessage.classList.add("failed");
+        formulaire.insertAdjacentElement("afterend", failMessage);
     }
 }
-

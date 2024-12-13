@@ -1,71 +1,59 @@
 // =============================
 // APPEL API : Works
 // =============================
-import { fetchWorks } from './api.js'; 
+import { fetchWorks } from './api.js';
+
 // =============================
 // INITIALISATION DE L'APPLICATION
 // =============================
 
-/**
- * Fonction principale pour initialiser l'application
- * - Récupère les travaux et les affiche dans la galerie
- */
+ // Fonction principale pour initialiser l'application.
 async function init() {
     try {
-    const works = await fetchWorks();
-    addGallery(works, ".gallery"); // Ajoute les images récupérées à la galerie
-    } catch(error) {
-        console.log("Erreur lors de l'initialisation de la gallerie :", error);
+        const works = await fetchWorks();
+        addGallery(works, ".gallery");
+    } catch (error) {
+        console.log("Erreur lors de l'initialisation de la galerie :", error);
     }
 }
-init(); // Démarre l'application
+init();
 
 // =============================
 // GESTION DE LA GALERIE
 // =============================
 
-/**
- * Crée un élément figure contenant une image et un titre.
- * @param {Object} item - Un élément contenant les données de l'image.
- * @returns {HTMLElement} - L'élément <figure> créé.
- */
+
+ // Crée un élément figure contenant une image et un titre.
 export function createPicture(item) {
-    // Création des éléments nécessaires
     const picture = document.createElement("figure");
-    const image = document.createElement("img")
-    const title = document.createElement("figcaption") 
+    const image = document.createElement("img");
+    const title = document.createElement("figcaption");
     
-    // Configuration des éléments
-    image.src = item.imageUrl
-    image.alt = item.title
-    title.textContent = item.title
-    picture.setAttribute("data-category-id", item.categoryId); 
-    image.setAttribute("data-id", item.id); 
+    image.src = item.imageUrl;
+    image.alt = item.title;
+    title.textContent = item.title;
+    picture.setAttribute("data-category-id", item.categoryId);
+    image.setAttribute("data-id", item.id);
 
-    // Ajout des enfants au parent <figure>
-    picture.appendChild(image)// Rattache img au parent picture
-    picture.appendChild(title)// rattache title au parent picture
+    picture.appendChild(image);
+    picture.appendChild(title);
 
-    return picture; // Retourne l'élément créé
+    return picture;
 }
 
-/**
- * Ajoute une liste d'éléments.
- * @param {Array} works - Liste des travaux récupérés.
- * @param {Object} classGallery - Classe utilisée pour incorporer les travaux
- */
+
+ // Ajoute une liste d'éléments.
 export function addGallery(works, classGallery) {
-    const gallery = document.querySelector(classGallery);// Sélectionne l'élément HTML où sera affichée la galerie
-    gallery.innerHTML = ''; // Nettoie la gallerie
-    works.forEach((item) => { // Parcourt chaque élément récupéré
-        const picture = createPicture(item); // Crée une picture pour chaque élément
-        gallery.appendChild(picture); // Ajoute la picture à la galerie grace au "return picture"         
+    const gallery = document.querySelector(classGallery);
+    gallery.innerHTML = '';
+    works.forEach((item) => {
+        const picture = createPicture(item);
+        gallery.appendChild(picture);
     });
 }
 
-/**
- * Fonction pour raffraichir la gallerie après modifications
- */
+
+ // Fonction pour rafraîchir la galerie après modifications.
 export async function refreshGallery(classGalery) {
     try {
         const works = await fetchWorks();

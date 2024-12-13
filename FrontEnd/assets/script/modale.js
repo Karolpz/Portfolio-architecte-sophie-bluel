@@ -48,10 +48,7 @@ async function createModalGallery() {
     addPictureButton.textContent = "Ajouter une photo";
     addPictureButton.classList.add("greenButton");
 
-    addPictureButton.addEventListener(("click"), async() => {
-      const categories = await fetchCategories()
-      createAddPictureForm(categories)
-    }) 
+    addPictureButton.addEventListener(("click"), toggleModalContent)
 
     modalGalleryContent.appendChild(modalGallery);
     modalGalleryContent.appendChild(modalLine);
@@ -91,6 +88,7 @@ export function initModal(elementToTrigger) {
         elementToTrigger.addEventListener('click', createModalGallery)
 }
 
+// Fonction pour la suppresion de photos dans la galerie
 function eventListenerDeletePicture() {
     const icons = document.querySelectorAll(".modalGallery figure i");
     icons.forEach((icon) => {
@@ -107,6 +105,10 @@ function eventListenerDeletePicture() {
 
 //Fonction qui permet de créer le formulaire d'ajout photo
 function createAddPictureForm (categories) {
+    const iconArrow = document.createElement("i")
+    iconArrow.classList.add("fa-solid", "fa-arrow-left", "iconArrow")
+    iconArrow.addEventListener(("click"), toggleModalContent)
+
     const formContent = document.createElement("div")
     formContent.id = "formContainer"
     formContent.textContent = "Ajout photo";
@@ -117,26 +119,10 @@ function createAddPictureForm (categories) {
     form.action = "#";
     form.enctype = "multipart/form-data";
 
-    const addPictureContainer = document.createElement("div")
-    addPictureContainer.classList.add("addFileContainer")
-
-    const iconImage = document.createElement("i");
-    iconImage.classList.add("fa-regular", "fa-image", "iconImage")
-
-    const previewImage = document.createElement("img");
-    previewImage.classList.add("previewImage");
-    previewImage.alt = "Aperçu de l'image";
-
-    const labelAddPicture = document.createElement ("label")
-    labelAddPicture.classList.add("addFileButton")
-    labelAddPicture.textContent ="+ Ajouter photo"
-
-    const sizeInfo = document.createElement("p")
-    sizeInfo.textContent="jpg, png : 4mo max"
-
     const inputAddPicture = document.createElement("input")
     inputAddPicture.type = "file"
     inputAddPicture.name = "uploaded_file"
+    inputAddPicture.setAttribute("required", "true")
 
     const labelTitle = document.createElement ("label")
     labelTitle.for = "title"
@@ -145,6 +131,7 @@ function createAddPictureForm (categories) {
     inputTitle.type = "text"
     inputTitle.name = "title"
     inputTitle.id = "title"
+    inputTitle.setAttribute("required", "true")
 
     const labelCategories = document.createElement ("label")
     labelCategories.for = "categories"
@@ -153,6 +140,7 @@ function createAddPictureForm (categories) {
     const selectCategories = document.createElement("select")
     selectCategories.id = "categories"
     selectCategories.name = "categories"
+    selectCategories.setAttribute("required", "true")
     
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
@@ -172,14 +160,10 @@ function createAddPictureForm (categories) {
     const submitAddPicture = document.createElement("input");
     submitAddPicture.type = "submit";
     submitAddPicture.value = "Valider";
+    submitAddPicture.classList.add("validateButton")
 
+    formContent.appendChild(iconArrow)
     formContent.appendChild(form)
-    form.appendChild(addPictureContainer)
-    addPictureContainer.appendChild(iconImage)
-    addPictureContainer.appendChild(previewImage); 
-    addPictureContainer.appendChild(labelAddPicture)
-    labelAddPicture.appendChild(inputAddPicture)
-    addPictureContainer.appendChild(sizeInfo)
     form.appendChild(labelTitle)
     form.appendChild(inputTitle)
     form.appendChild(labelCategories)
@@ -187,34 +171,86 @@ function createAddPictureForm (categories) {
     form.appendChild(modalLine);
     form.appendChild(submitAddPicture);
 
-    inputAddPicture.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-              previewImage.src = event.target.result;
-              previewImage.style.display = "block"; // Afficher l'image
-              iconImage.style.display = "none"; // Cacher l'icône
-              labelAddPicture.style.display = "none"; // Cacher l'icône
-          };
-          reader.readAsDataURL(file); // Lire le fichier
-      } else {
-          previewImage.style.display = "none"; // Cacher l'aperçu si le fichier n'est pas valide
-          iconImage.style.display = "block"; // Réafficher l'icône
-          alert("Veuillez sélectionner une image valide (jpg ou png).");
-      }
-  });
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault(); // Empêche le rechargement de la page
-      await addFormData(inputAddPicture, inputTitle, selectCategories)
-        refreshGallery(".gallery");
-      }
-    );
-
+    form.addEventListener("submit", handleAddSubmit)
+  
     createModalStructure(formContent) 
+    handleImageInput (inputAddPicture)
+    addInputListeners()
+
+    return formContent
+}
+// Fonction pour la gestion des file dans le formulaire
+function handleImageInput (inputFile) {
+  const form = document.querySelector("#formContainer form")
+
+  const addPictureContainer = document.createElement("div")
+  addPictureContainer.classList.add("addFileContainer")
+
+  const iconImage = document.createElement("i");
+  iconImage.classList.add("fa-regular", "fa-image", "iconImage")
+
+  const previewImage = document.createElement("img");
+  previewImage.classList.add("previewImage");
+  previewImage.alt = "Aperçu de l'image";
+
+  const labelAddPicture = document.createElement ("label")
+  labelAddPicture.classList.add("addFileButton")
+  labelAddPicture.textContent ="+ Ajouter photo"
+
+  const sizeInfo = document.createElement("p")
+  sizeInfo.textContent="jpg, png : 4mo max"
+
+  form.insertAdjacentElement("afterbegin",addPictureContainer)
+  addPictureContainer.appendChild(iconImage)
+  addPictureContainer.appendChild(previewImage); 
+  addPictureContainer.appendChild(labelAddPicture)
+  labelAddPicture.appendChild(inputFile)
+  addPictureContainer.appendChild(sizeInfo)
+
+  inputFile.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            previewImage.src = event.target.result;
+            previewImage.style.display = "block";
+            iconImage.style.display = "none";
+            labelAddPicture.style.display = "none";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        previewImage.style.display = "none";
+        iconImage.style.display = "block";
+        alert("Veuillez sélectionner une image valide (jpg ou png).");
+    }
+});
 }
 
+// Fonction pour la gestion du bouton de validation lors de l'ajout de photos
+async function handleAddSubmit (event) {
+  const inputAddPicture = document.querySelector('input[name="uploaded_file"]');
+  const inputTitle = document.querySelector('input[name="title"]');
+  const selectCategories = document.querySelector('select[name="categories"]');
+  const form = event.target
+  
+  event.preventDefault();
+  await addFormData(inputAddPicture, inputTitle, selectCategories)
+    refreshGallery(".gallery");
+
+    form.reset();
+
+  const previewImage = document.querySelector(".previewImage");
+  const iconImage = document.querySelector(".iconImage");
+  const labelAddPicture = document.querySelector(".addFileButton");
+
+  previewImage.style.display = "none"; 
+  iconImage.style.display = "block"; 
+  labelAddPicture.style.display = "block";
+
+  addInputListeners()
+  }
+
+  // Fonction qui envoie les données du formulaire à l'API
 async function addFormData (image, title, category) {
   const formData = new FormData();
   
@@ -225,4 +261,48 @@ async function addFormData (image, title, category) {
     await fetchAddWorks(formData);
   }
 
+  // Fonction qui change de modale
+  async function toggleModalContent () {
+    const modalOverlay = document.querySelector(".modal-overlay")
+    const isGalleryClass = document.querySelector(".modalGallery")
+
+    if (modalOverlay) {
+      document.body.removeChild(modalOverlay);
+    }
+
+    if (isGalleryClass) {
+      const categories = await fetchCategories()
+      createAddPictureForm(categories)
+    } else {
+      createModalGallery()
+    }
+  }
   
+  // Fonction de validation du formulaire
+function checkValidityForm () {
+  const submitAddPicture = document.querySelector(".validateButton")
+
+  const requiredFields = document.querySelectorAll("input[required], select[required]")
+  let allValid = true
+
+  requiredFields.forEach(field =>{
+    if (!field.value.trim()) {
+      allValid = false
+    }
+  })
+
+  if (allValid) {
+    submitAddPicture.classList.remove("greyButton")
+  } else {
+    submitAddPicture.classList.add("greyButton")
+  }
+}
+
+// Fonction pour surveiller les champs du formlaire et à les valider
+function addInputListeners() {
+  const requiredFields = document.querySelectorAll("input[required], select[required]");
+  requiredFields.forEach(field => {
+    field.addEventListener("input", checkValidityForm);
+  });
+  checkValidityForm()
+}
