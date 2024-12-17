@@ -95,13 +95,13 @@ function eventListenerDeletePicture() {
         icon.addEventListener("click", async (event) => {
             const iconId = parseInt(event.target.dataset.id, 10); 
             await fetchDelete(iconId)
-                const figure = event.target.closest("figure"); // Trouve le parent <figure>
-                    figure.remove(); // Supprime la figure du DOM
+                const figure = event.target.closest("figure");
+                    figure.remove();
 
                 refreshGallery(".gallery");
-     } );
+              });
             })
-        };
+};
 
 //Fonction qui permet de créer le formulaire d'ajout photo
 function createAddPictureForm (categories) {
@@ -293,8 +293,10 @@ function checkValidityForm () {
 
   if (allValid) {
     submitAddPicture.classList.remove("greyButton")
+    submitAddPicture.removeAttribute("title", "Veuillez compléter tous les champs");
   } else {
     submitAddPicture.classList.add("greyButton")
+    submitAddPicture.setAttribute("title", "Veuillez compléter tous les champs");
   }
 }
 

@@ -10,8 +10,7 @@ export async function fetchWorks() {
 }
 
 // Fonction pour récupérer les catégories depuis l'API
-export async function fetchCategories() {
-    try {
+export async function fetchCategories() {    try {
         const urlAPIcategories = "http://localhost:5678/api/categories";
         const response = await fetch(urlAPIcategories);
         return await response.json();

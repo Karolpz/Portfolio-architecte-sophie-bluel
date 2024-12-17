@@ -9,7 +9,7 @@ async function init() {
         const isAdmin = isAdminLoggedIn();
         if (!isAdmin) {
             const categories = await fetchCategories();
-            createFilterBar(categories);
+            createFilterBar(categories);  
         }
     } catch (error) {
         console.log("Erreur lors de l'initialisation des filtres :", error);

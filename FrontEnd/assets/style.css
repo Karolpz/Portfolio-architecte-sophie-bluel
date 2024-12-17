@@ -152,6 +152,9 @@ li:hover {
 	justify-content: center;
 	gap : 10px;
 }
+#portfolio button {
+	cursor: pointer;
+}
 #portfolio .filterSelected {
 	background-color: #1D6154;
 	color: white;
@@ -454,10 +457,10 @@ footer nav ul {
 	padding : 10px 60px;
 	border: none;
 	width: 237px;
+	cursor: pointer;
  }
  #formContainer .greyButton {
 	background-color: #a7a7a7;
-	pointer-events: none;
  }
  .modal .iconArrow {
 	color: black;
