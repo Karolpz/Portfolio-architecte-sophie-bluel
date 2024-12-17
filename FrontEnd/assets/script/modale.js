@@ -248,6 +248,9 @@ async function handleAddSubmit (event) {
   labelAddPicture.style.display = "block";
 
   addInputListeners()
+
+  const modalOverlay = document.querySelector(".modal-overlay")
+  document.body.removeChild(modalOverlay);
   }
 
   // Fonction qui envoie les données du formulaire à l'API
